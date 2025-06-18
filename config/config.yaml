@@ -1,0 +1,52 @@
+api:
+  base_url: "https://api.coingecko.com/api/v3"
+  endpoint: "/coins/markets"
+  params:
+    vs_currency: "usd"
+    order: "market_cap_desc"
+    per_page: 100
+    page: 1
+    sparkline: false
+
+transform:
+  min_market_cap: 1000000  # Filter coins with market cap >= $1M
+  columns_to_keep: ["id", "symbol", "name", "current_price", "market_cap", "total_volume", "last_updated"]
+  aggregate:
+    group_by: "symbol"
+    metrics:
+      avg_price: "current_price"
+      total_market_cap: "market_cap"
+      total_volume: "total_volume"
+
+s3:
+  bucket_name: "your-bucket-name"
+  prefix: "crypto-data/processed/"
+
+
+
+
+# api:
+#   base_url: "https://api.coingecko.com/api/v3"
+#   endpoint: "/coins/markets"
+#   params:
+#     vs_currency: "usd"
+#     order: "market_cap_desc"
+#     per_page: 100
+#     page: 1
+#     sparkline: false
+# transform:
+#   min_market_cap: 1000000000  # Filter: min market cap in USD
+#   columns: ["id", "symbol", "name", "current_price", "market_cap", "total_volume", "last_updated"]
+#   aggregations:
+#     - group_by: "symbol"
+#       agg_columns:
+#         - column: "current_price"
+#           function: "mean"
+#           output_column: "avg_price"
+# s3:
+#   bucket_name: "your-s3-bucket-name"
+#   prefix: "crypto_data/"
+#   region: "us-east-1"
+# logging:
+#   level: "INFO"
+#   file: "pipeline.log"

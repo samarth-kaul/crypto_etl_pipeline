@@ -1,0 +1,25 @@
+# Python
+pycache/
+*.pyc
+*.pyo
+*.pyd
+.Python
+venv/
+.env
+*.egg-info/
+dist/
+build/
+
+# Logs
+logs/
+
+# AWS Credentials
+*.pem
+*.key
+
+# IDE
+.vscode/
+.idea/
+
+# OS Files
+.DS_Store
