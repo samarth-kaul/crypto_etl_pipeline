@@ -1,3 +1,43 @@
+import logging
+from dagster import Definitions
+from src.dagster.assets import raw_crypto_data, transformed_crypto_data, s3_crypto_data
+from src.dagster.jobs import crypto_pipeline_job
+from src.dagster.schedules import daily_crypto_pipeline_schedule
+from src.dagster.resources import config_resource, s3_client_resource
+from dotenv import load_dotenv
+
+
+# Configure logger
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(levelname)s - %(message)s',
+    handlers=[
+        logging.FileHandler('logs/pipeline.log'),
+        logging.StreamHandler()
+    ]
+)
+logger = logging.getLogger(__name__)
+
+logger.info("Loading environment variables")
+load_dotenv()  # Load AWS credentials
+logger.info("Environment variables loaded")
+
+logger.info("Defining Dagster pipeline")
+defs = Definitions(
+    assets=[raw_crypto_data, transformed_crypto_data, s3_crypto_data],
+    jobs=[crypto_pipeline_job],
+    schedules=[daily_crypto_pipeline_schedule],
+    resources={
+        "config": config_resource,
+        "s3_client": s3_client_resource
+    }
+)
+logger.info("Dagster pipeline defined")
+
+
+
+
+
 # import yaml
 # import logging
 # from datetime import datetime
@@ -39,27 +79,29 @@
 #     main()
 
 
-import logging
-from src.pipeline import Pipeline
-from dotenv import load_dotenv
+# import logging
+# from src.pipeline import Pipeline
+# from dotenv import load_dotenv
 
-# Configure logging
-logging.basicConfig(
-    level=logging.INFO,
-    format='%(asctime)s - %(levelname)s - %(message)s',
-    handlers=[
-        logging.FileHandler('logs/pipeline.log'),
-        logging.StreamHandler()
-    ]
-)
-logger = logging.getLogger(__name__)
+# # Configure logging
+# logging.basicConfig(
+#     level=logging.INFO,
+#     format='%(asctime)s - %(levelname)s - %(message)s',
+#     handlers=[
+#         logging.FileHandler('logs/pipeline.log'),
+#         logging.StreamHandler()
+#     ]
+# )
+# logger = logging.getLogger(__name__)
 
-def main():
-    """Run the data pipeline."""
-    load_dotenv()  # Load AWS credentials from .env
-    config_path = 'config/config.yaml'
-    pipeline = Pipeline(config_path)
-    pipeline.run()
+# def main():
+#     """Run the data pipeline."""
+#     load_dotenv()  # Load AWS credentials from .env
+#     config_path = 'config/config.yaml'
+#     pipeline = Pipeline(config_path)
+#     pipeline.run()
 
-if __name__ == '__main__':
-    main()
+# if __name__ == '__main__':
+#     main()
+
+
